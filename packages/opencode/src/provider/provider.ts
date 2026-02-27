@@ -743,13 +743,13 @@ export namespace Provider {
 
     // Add Kiro provider with Claude models
     const kiroModels: Record<string, Model> = {
-      "claude-sonnet-4-5": {
-        id: "claude-sonnet-4-5",
+      "claude-sonnet-4-6": {
+        id: "claude-sonnet-4-6",
         providerID: "kiro",
-        name: "Claude Sonnet 4.5",
+        name: "Claude Sonnet 4.6",
         family: "claude-sonnet",
         api: {
-          id: "claude-sonnet-4-5",
+          id: "claude-sonnet-4-6",
           url: "https://codewhisperer.us-east-1.amazonaws.com",
           npm: "@ai-sdk/kiro",
         },
@@ -767,7 +767,7 @@ export namespace Provider {
           output: { text: true, audio: false, image: false, video: false, pdf: false },
           interleaved: true,
         },
-        release_date: "2025-09-29",
+        release_date: "2026-02-17",
         variants: {
           high: {
             thinking: {
@@ -783,13 +783,13 @@ export namespace Provider {
           },
         },
       },
-      "claude-opus-4-5": {
-        id: "claude-opus-4-5",
+      "claude-opus-4-6": {
+        id: "claude-opus-4-6",
         providerID: "kiro",
-        name: "Claude Opus 4.5",
+        name: "Claude Opus 4.6",
         family: "claude-opus",
         api: {
-          id: "claude-opus-4-5",
+          id: "claude-opus-4-6",
           url: "https://codewhisperer.us-east-1.amazonaws.com",
           npm: "@ai-sdk/kiro",
         },
@@ -807,7 +807,7 @@ export namespace Provider {
           output: { text: true, audio: false, image: false, video: false, pdf: false },
           interleaved: true,
         },
-        release_date: "2025-11-01",
+        release_date: "2026-02-05",
         variants: {
           high: {
             thinking: {
