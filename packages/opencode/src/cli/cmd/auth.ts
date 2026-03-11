@@ -341,7 +341,10 @@ export const AuthLoginCommand = cmd({
           existingProviders: providers,
           disabled,
           enabled,
-          providerNames: Object.fromEntries(Object.entries(config.provider ?? {}).map(([id, p]) => [id, p.name])),
+          providerNames: {
+            kiro: "Kiro (AWS)",
+            ...Object.fromEntries(Object.entries(config.provider ?? {}).map(([id, p]) => [id, p.name])),
+          },
         })
         const options = [
           ...pipe(
@@ -358,6 +361,7 @@ export const AuthLoginCommand = cmd({
                 opencode: "recommended",
                 anthropic: "Claude Max or API key",
                 openai: "ChatGPT Plus/Pro or API key",
+                kiro: "Use existing Kiro CLI login",
               }[x.id],
             })),
           ),
