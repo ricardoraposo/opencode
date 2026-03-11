@@ -36,6 +36,7 @@ import { DialogSkill } from "../dialog-skill"
 
 export type PromptProps = {
   sessionID?: string
+  workspaceID?: string
   visible?: boolean
   disabled?: boolean
   onSubmit?: () => void
@@ -541,7 +542,9 @@ export function Prompt(props: PromptProps) {
 
     let sessionID = props.sessionID
     if (sessionID == null) {
-      const res = await sdk.client.session.create({})
+      const res = await sdk.client.session.create({
+        workspaceID: props.workspaceID,
+      })
 
       if (res.error) {
         console.log("Creating a session failed:", res.error)
