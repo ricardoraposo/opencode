@@ -30,6 +30,7 @@ import { createOpenAI } from "@ai-sdk/openai"
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible"
 import { createOpenRouter, type LanguageModelV2 } from "@openrouter/ai-sdk-provider"
 import { createOpenaiCompatible as createGitHubCopilotOpenAICompatible } from "./sdk/copilot"
+import { createKiro } from "./sdk/kiro/src"
 import { createXai } from "@ai-sdk/xai"
 import { createMistral } from "@ai-sdk/mistral"
 import { createGroq } from "@ai-sdk/groq"
@@ -44,6 +45,7 @@ import { createGitLab, VERSION as GITLAB_PROVIDER_VERSION } from "@gitlab/gitlab
 import { fromNodeProviderChain } from "@aws-sdk/credential-providers"
 import { GoogleAuth } from "google-auth-library"
 import { ProviderTransform } from "./transform"
+import { getKiroDbPath } from "../plugin/kiro"
 import { Installation } from "../installation"
 
 const DEFAULT_CHUNK_TIMEOUT = 120_000
@@ -162,6 +164,8 @@ export namespace Provider {
     "@gitlab/gitlab-ai-provider": createGitLab,
     // @ts-ignore (TODO: kill this code so we dont have to maintain it)
     "@ai-sdk/github-copilot": createGitHubCopilotOpenAICompatible,
+    // @ts-ignore
+    "@ai-sdk/kiro": createKiro,
   }
 
   type CustomModelLoader = (sdk: any, modelID: string, options?: Record<string, any>) => Promise<any>
@@ -658,13 +662,23 @@ export namespace Provider {
         },
       }
     },
-    kilo: async () => {
+    kiro: async (input) => {
+      // Check if Kiro CLI authentication exists
+      const dbPath = getKiroDbPath()
+      const hasAuth = await Bun.file(dbPath).exists()
+
+      if (!hasAuth) {
+        // No auth, hide all models
+        for (const key of Object.keys(input.models)) {
+          delete input.models[key]
+        }
+      }
+
       return {
-        autoload: false,
+        autoload: hasAuth,
         options: {
           headers: {
-            "HTTP-Referer": "https://opencode.ai/",
-            "X-Title": "opencode",
+            "x-kiro-client": "opencode",
           },
         },
       }
@@ -873,6 +887,180 @@ export namespace Provider {
           providerID: "github-copilot-enterprise",
         })),
       }
+    }
+
+    // Add Kiro provider with Claude models
+    const kiroModels: Record<string, Model> = {
+      "claude-sonnet-4-6": {
+        id: "claude-sonnet-4-6",
+        providerID: "kiro",
+        name: "Claude Sonnet 4.6",
+        family: "claude-sonnet",
+        api: {
+          id: "claude-sonnet-4-6",
+          url: "https://codewhisperer.us-east-1.amazonaws.com",
+          npm: "@ai-sdk/kiro",
+        },
+        status: "active",
+        headers: {},
+        options: {},
+        cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
+        limit: { context: 200000, output: 64000 },
+        capabilities: {
+          temperature: true,
+          reasoning: true,
+          attachment: true,
+          toolcall: true,
+          input: { text: true, audio: false, image: true, video: false, pdf: true },
+          output: { text: true, audio: false, image: false, video: false, pdf: false },
+          interleaved: true,
+        },
+        release_date: "2026-02-17",
+        variants: {
+          high: {
+            thinking: {
+              type: "enabled",
+              budgetTokens: 16000,
+            },
+          },
+          max: {
+            thinking: {
+              type: "enabled",
+              budgetTokens: 31999,
+            },
+          },
+        },
+      },
+      "claude-opus-4-6": {
+        id: "claude-opus-4-6",
+        providerID: "kiro",
+        name: "Claude Opus 4.6",
+        family: "claude-opus",
+        api: {
+          id: "claude-opus-4-6",
+          url: "https://codewhisperer.us-east-1.amazonaws.com",
+          npm: "@ai-sdk/kiro",
+        },
+        status: "active",
+        headers: {},
+        options: {},
+        cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
+        limit: { context: 200000, output: 32000 },
+        capabilities: {
+          temperature: true,
+          reasoning: true,
+          attachment: true,
+          toolcall: true,
+          input: { text: true, audio: false, image: true, video: false, pdf: true },
+          output: { text: true, audio: false, image: false, video: false, pdf: false },
+          interleaved: true,
+        },
+        release_date: "2026-02-05",
+        variants: {
+          high: {
+            thinking: {
+              type: "enabled",
+              budgetTokens: 16000,
+            },
+          },
+          max: {
+            thinking: {
+              type: "enabled",
+              budgetTokens: 31999,
+            },
+          },
+        },
+      },
+      "claude-haiku-4-5": {
+        id: "claude-haiku-4-5",
+        providerID: "kiro",
+        name: "Claude Haiku 4.5",
+        family: "claude-haiku",
+        api: {
+          id: "claude-haiku-4-5",
+          url: "https://codewhisperer.us-east-1.amazonaws.com",
+          npm: "@ai-sdk/kiro",
+        },
+        status: "active",
+        headers: {},
+        options: {},
+        cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
+        limit: { context: 200000, output: 8192 },
+        capabilities: {
+          temperature: true,
+          reasoning: false,
+          attachment: true,
+          toolcall: true,
+          input: { text: true, audio: false, image: true, video: false, pdf: true },
+          output: { text: true, audio: false, image: false, video: false, pdf: false },
+          interleaved: false,
+        },
+        release_date: "2025-10-01",
+        variants: {},
+      },
+      "claude-sonnet-4": {
+        id: "claude-sonnet-4",
+        providerID: "kiro",
+        name: "Claude Sonnet 4",
+        family: "claude-sonnet",
+        api: {
+          id: "claude-sonnet-4",
+          url: "https://codewhisperer.us-east-1.amazonaws.com",
+          npm: "@ai-sdk/kiro",
+        },
+        status: "active",
+        headers: {},
+        options: {},
+        cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
+        limit: { context: 200000, output: 64000 },
+        capabilities: {
+          temperature: true,
+          reasoning: false,
+          attachment: true,
+          toolcall: true,
+          input: { text: true, audio: false, image: true, video: false, pdf: true },
+          output: { text: true, audio: false, image: false, video: false, pdf: false },
+          interleaved: false,
+        },
+        release_date: "2025-05-14",
+        variants: {},
+      },
+      "claude-3-7-sonnet": {
+        id: "claude-3-7-sonnet",
+        providerID: "kiro",
+        name: "Claude 3.7 Sonnet",
+        family: "claude-sonnet",
+        api: {
+          id: "claude-3-7-sonnet",
+          url: "https://codewhisperer.us-east-1.amazonaws.com",
+          npm: "@ai-sdk/kiro",
+        },
+        status: "active",
+        headers: {},
+        options: {},
+        cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
+        limit: { context: 200000, output: 64000 },
+        capabilities: {
+          temperature: true,
+          reasoning: true,
+          attachment: true,
+          toolcall: true,
+          input: { text: true, audio: false, image: true, video: false, pdf: true },
+          output: { text: true, audio: false, image: false, video: false, pdf: false },
+          interleaved: { field: "reasoning_content" },
+        },
+        release_date: "2025-02-19",
+        variants: {},
+      },
+    }
+
+    database["kiro"] = {
+      id: "kiro",
+      name: "Kiro (AWS)",
+      source: "custom",
+      env: [],
+      options: {},
+      models: kiroModels,
     }
 
     function mergeProvider(providerID: string, provider: Partial<Info>) {
