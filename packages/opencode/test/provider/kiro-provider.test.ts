@@ -1,6 +1,7 @@
 import { test, expect, mock } from "bun:test"
 import path from "path"
 import { unlink } from "fs/promises"
+import { ProviderID } from "../../src/provider/schema"
 
 // === Mocks ===
 // These mocks are required because Provider.list() triggers:
@@ -67,7 +68,7 @@ test("Kiro: provider is registered in database with correct models", async () =>
       // Without auth, kiro models should be hidden
       if (kiro) {
         expect(kiro.name).toBe("Kiro (AWS)")
-        expect(kiro.id).toBe("kiro")
+        expect(kiro.id).toBe("kiro" as ProviderID)
       }
     },
   })
@@ -192,7 +193,7 @@ test("Kiro: provider behavior depends on auth state", async () => {
       // - If no auth: models are hidden (deleted in custom loader)
       // This test verifies the provider is properly configured either way
       if (kiro) {
-        expect(kiro.id).toBe("kiro")
+        expect(kiro.id).toBe("kiro" as ProviderID)
         expect(kiro.name).toBe("Kiro (AWS)")
         // Models count depends on auth state - just verify it's a valid number
         expect(typeof Object.keys(kiro.models).length).toBe("number")

@@ -892,10 +892,11 @@ export namespace Provider {
     }
 
     // Add Kiro provider with Claude models
-    const kiroModels: Record<string, Model> = {
+    const kiro = "kiro" as ProviderID
+    const kiroModels = {
       "claude-sonnet-4-6": {
-        id: "claude-sonnet-4-6",
-        providerID: "kiro",
+        id: "claude-sonnet-4-6" as ModelID,
+        providerID: kiro,
         name: "Claude Sonnet 4.6",
         family: "claude-sonnet",
         api: {
@@ -903,7 +904,7 @@ export namespace Provider {
           url: "https://codewhisperer.us-east-1.amazonaws.com",
           npm: "@ai-sdk/kiro",
         },
-        status: "active",
+        status: "active" as const,
         headers: {},
         options: {},
         cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
@@ -934,8 +935,8 @@ export namespace Provider {
         },
       },
       "claude-opus-4-6": {
-        id: "claude-opus-4-6",
-        providerID: "kiro",
+        id: "claude-opus-4-6" as ModelID,
+        providerID: kiro,
         name: "Claude Opus 4.6",
         family: "claude-opus",
         api: {
@@ -943,7 +944,7 @@ export namespace Provider {
           url: "https://codewhisperer.us-east-1.amazonaws.com",
           npm: "@ai-sdk/kiro",
         },
-        status: "active",
+        status: "active" as const,
         headers: {},
         options: {},
         cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
@@ -974,8 +975,8 @@ export namespace Provider {
         },
       },
       "claude-haiku-4-5": {
-        id: "claude-haiku-4-5",
-        providerID: "kiro",
+        id: "claude-haiku-4-5" as ModelID,
+        providerID: kiro,
         name: "Claude Haiku 4.5",
         family: "claude-haiku",
         api: {
@@ -983,7 +984,7 @@ export namespace Provider {
           url: "https://codewhisperer.us-east-1.amazonaws.com",
           npm: "@ai-sdk/kiro",
         },
-        status: "active",
+        status: "active" as const,
         headers: {},
         options: {},
         cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
@@ -1001,8 +1002,8 @@ export namespace Provider {
         variants: {},
       },
       "claude-sonnet-4": {
-        id: "claude-sonnet-4",
-        providerID: "kiro",
+        id: "claude-sonnet-4" as ModelID,
+        providerID: kiro,
         name: "Claude Sonnet 4",
         family: "claude-sonnet",
         api: {
@@ -1010,7 +1011,7 @@ export namespace Provider {
           url: "https://codewhisperer.us-east-1.amazonaws.com",
           npm: "@ai-sdk/kiro",
         },
-        status: "active",
+        status: "active" as const,
         headers: {},
         options: {},
         cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
@@ -1028,8 +1029,8 @@ export namespace Provider {
         variants: {},
       },
       "claude-3-7-sonnet": {
-        id: "claude-3-7-sonnet",
-        providerID: "kiro",
+        id: "claude-3-7-sonnet" as ModelID,
+        providerID: kiro,
         name: "Claude 3.7 Sonnet",
         family: "claude-sonnet",
         api: {
@@ -1037,7 +1038,7 @@ export namespace Provider {
           url: "https://codewhisperer.us-east-1.amazonaws.com",
           npm: "@ai-sdk/kiro",
         },
-        status: "active",
+        status: "active" as const,
         headers: {},
         options: {},
         cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
@@ -1049,15 +1050,15 @@ export namespace Provider {
           toolcall: true,
           input: { text: true, audio: false, image: true, video: false, pdf: true },
           output: { text: true, audio: false, image: false, video: false, pdf: false },
-          interleaved: { field: "reasoning_content" },
+          interleaved: { field: "reasoning_content" as const },
         },
         release_date: "2025-02-19",
         variants: {},
       },
-    }
+    } satisfies Record<string, Model>
 
     database["kiro"] = {
-      id: "kiro",
+      id: kiro,
       name: "Kiro (AWS)",
       source: "custom",
       env: [],
