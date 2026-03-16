@@ -49,7 +49,7 @@ import { getKiroDbPath } from "../plugin/kiro"
 import { Installation } from "../installation"
 import { ModelID, ProviderID } from "./schema"
 
-const DEFAULT_CHUNK_TIMEOUT = 120_000
+const DEFAULT_CHUNK_TIMEOUT = 300_000
 
 export namespace Provider {
   const log = Log.create({ service: "provider" })
