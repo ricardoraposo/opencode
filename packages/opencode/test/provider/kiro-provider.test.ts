@@ -64,7 +64,7 @@ test("Kiro: provider is registered in database with correct models", async () =>
       const providers = await Provider.list()
       // Kiro provider should exist in database but may not be loaded without auth
       // Check that the provider definition exists
-      const kiro = providers["kiro"]
+      const kiro = providers["kiro" as ProviderID]
       // Without auth, kiro models should be hidden
       if (kiro) {
         expect(kiro.name).toBe("Kiro (AWS)")
@@ -91,7 +91,7 @@ test("Kiro: models have correct capabilities", async () => {
       // Access the internal database to check model definitions
       // This tests that the models are correctly defined even if not loaded
       const providers = await Provider.list()
-      const kiro = providers["kiro"]
+      const kiro = providers["kiro" as ProviderID]
 
       if (kiro && Object.keys(kiro.models).length > 0) {
         // Check claude-sonnet-4-5 model capabilities
@@ -127,7 +127,7 @@ test("Kiro: models have correct variants for thinking mode", async () => {
     directory: tmp.path,
     fn: async () => {
       const providers = await Provider.list()
-      const kiro = providers["kiro"]
+      const kiro = providers["kiro" as ProviderID]
 
       if (kiro && Object.keys(kiro.models).length > 0) {
         // Check that reasoning-capable models have thinking variants
@@ -159,10 +159,10 @@ test("Kiro: provider uses correct npm package", async () => {
     directory: tmp.path,
     fn: async () => {
       const providers = await Provider.list()
-      const kiro = providers["kiro"]
+      const kiro = providers["kiro" as ProviderID]
 
       if (kiro && Object.keys(kiro.models).length > 0) {
-        const model = Object.values(kiro.models)[0]
+        const model = Object.values(kiro.models)[0]!
         expect(model.api.npm).toBe("@ai-sdk/kiro")
         expect(model.api.url).toContain("codewhisperer")
         expect(model.api.url).toContain("amazonaws.com")
@@ -186,7 +186,7 @@ test("Kiro: provider behavior depends on auth state", async () => {
     directory: tmp.path,
     fn: async () => {
       const providers = await Provider.list()
-      const kiro = providers["kiro"]
+      const kiro = providers["kiro" as ProviderID]
 
       // Kiro provider behavior depends on whether Kiro CLI auth exists:
       // - If auth exists: models are shown
@@ -226,7 +226,7 @@ test("Kiro: provider can be configured via opencode.json", async () => {
     directory: tmp.path,
     fn: async () => {
       const providers = await Provider.list()
-      const kiro = providers["kiro"]
+      const kiro = providers["kiro" as ProviderID]
 
       if (kiro) {
         // Custom headers should be merged
