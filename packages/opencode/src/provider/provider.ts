@@ -1051,6 +1051,126 @@ export namespace Provider {
         release_date: "2025-02-19",
         variants: {},
       },
+      "minimax-m2.5": {
+        id: "minimax-m2.5" as ModelID,
+        providerID: kiro,
+        name: "MiniMax M2.5",
+        family: "minimax",
+        api: {
+          id: "minimax-m2.5",
+          url: "https://codewhisperer.us-east-1.amazonaws.com",
+          npm: "@ai-sdk/kiro",
+        },
+        status: "active" as const,
+        headers: {},
+        options: {},
+        cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
+        limit: { context: 200000, output: 64000 },
+        capabilities: {
+          temperature: true,
+          reasoning: true,
+          attachment: true,
+          toolcall: true,
+          input: { text: true, audio: false, image: true, video: false, pdf: true },
+          output: { text: true, audio: false, image: false, video: false, pdf: false },
+          interleaved: true,
+        },
+        release_date: "2026-02-17",
+        variants: {
+          high: {
+            thinking: {
+              type: "enabled",
+              budgetTokens: 16000,
+            },
+          },
+          max: {
+            thinking: {
+              type: "enabled",
+              budgetTokens: 31999,
+            },
+          },
+        },
+      },
+      "deepseek.v3.2": {
+        id: "v3.2" as ModelID,
+        providerID: kiro,
+        name: "DeepSeek V3.2",
+        family: "deepseek",
+        api: {
+          id: "v3.2",
+          url: "https://codewhisperer.us-east-1.amazonaws.com",
+          npm: "@ai-sdk/kiro",
+        },
+        status: "active" as const,
+        headers: {},
+        options: {},
+        cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
+        limit: { context: 200000, output: 64000 },
+        capabilities: {
+          temperature: true,
+          reasoning: true,
+          attachment: true,
+          toolcall: true,
+          input: { text: true, audio: false, image: false, video: false, pdf: false },
+          output: { text: true, audio: false, image: false, video: false, pdf: false },
+          interleaved: true,
+        },
+        release_date: "2025-12-01",
+        variants: {
+          high: {
+            thinking: {
+              type: "enabled",
+              budgetTokens: 16000,
+            },
+          },
+          max: {
+            thinking: {
+              type: "enabled",
+              budgetTokens: 31999,
+            },
+          },
+        },
+      },
+      "qwen3-coder-next": {
+        id: "qwen3-coder-next" as ModelID,
+        providerID: kiro,
+        name: "Qwen 3 Coder Next",
+        family: "qwen",
+        api: {
+          id: "qwen3-coder-next",
+          url: "https://codewhisperer.us-east-1.amazonaws.com",
+          npm: "@ai-sdk/kiro",
+        },
+        status: "active" as const,
+        headers: {},
+        options: {},
+        cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
+        limit: { context: 200000, output: 64000 },
+        capabilities: {
+          temperature: true,
+          reasoning: true,
+          attachment: true,
+          toolcall: true,
+          input: { text: true, audio: false, image: false, video: false, pdf: false },
+          output: { text: true, audio: false, image: false, video: false, pdf: false },
+          interleaved: true,
+        },
+        release_date: "2026-02-04",
+        variants: {
+          high: {
+            thinking: {
+              type: "enabled",
+              budgetTokens: 16000,
+            },
+          },
+          max: {
+            thinking: {
+              type: "enabled",
+              budgetTokens: 31999,
+            },
+          },
+        },
+      },
     } satisfies Record<string, Model>
 
     database["kiro"] = {
