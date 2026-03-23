@@ -21,6 +21,7 @@ export const ProviderID = providerIdSchema.pipe(
     amazonBedrock: schema.makeUnsafe("amazon-bedrock"),
     azure: schema.makeUnsafe("azure"),
     openrouter: schema.makeUnsafe("openrouter"),
+    githubCopilotEnterprise: schema.makeUnsafe("github-copilot-enterprise"),
     mistral: schema.makeUnsafe("mistral"),
     gitlab: schema.makeUnsafe("gitlab"),
   })),
