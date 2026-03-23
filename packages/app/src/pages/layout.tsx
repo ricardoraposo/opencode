@@ -936,6 +936,26 @@ export default function Layout(props: ParentProps) {
     navigateToSession(session)
   }
 
+  function navigateProjectByOffset(offset: number) {
+    const projects = layout.projects.list()
+    if (projects.length === 0) return
+
+    const current = currentProject()?.worktree
+    const fallback = currentDir() ? projectRoot(currentDir()) : undefined
+    const active = current ?? fallback
+    const index = active ? projects.findIndex((project) => project.worktree === active) : -1
+
+    const target =
+      index === -1
+        ? offset > 0
+          ? projects[0]
+          : projects[projects.length - 1]
+        : projects[(index + offset + projects.length) % projects.length]
+    if (!target) return
+
+    openProject(target.worktree)
+  }
+
   function navigateSessionByUnseen(offset: number) {
     const sessions = currentSessions()
     if (sessions.length === 0) return
@@ -1001,6 +1021,20 @@ export default function Layout(props: ParentProps) {
         category: language.t("command.category.project"),
         keybind: "mod+o",
         onSelect: () => chooseProject(),
+      },
+      {
+        id: "project.previous",
+        title: language.t("command.project.previous"),
+        category: language.t("command.category.project"),
+        keybind: "mod+alt+arrowup",
+        onSelect: () => navigateProjectByOffset(-1),
+      },
+      {
+        id: "project.next",
+        title: language.t("command.project.next"),
+        category: language.t("command.category.project"),
+        keybind: "mod+alt+arrowdown",
+        onSelect: () => navigateProjectByOffset(1),
       },
       {
         id: "provider.connect",
@@ -2334,14 +2368,12 @@ export default function Layout(props: ParentProps) {
                     size={layout.sidebar.width()}
                     min={244}
                     max={typeof window === "undefined" ? 1000 : window.innerWidth * 0.3 + 64}
-                    collapseThreshold={244}
                     onResize={(w) => {
                       setState("sizing", true)
                       if (sizet !== undefined) clearTimeout(sizet)
                       sizet = window.setTimeout(() => setState("sizing", false), 120)
                       layout.sidebar.resize(w)
                     }}
-                    onCollapse={layout.sidebar.close}
                   />
                 </div>
               </Show>
