@@ -12,6 +12,7 @@ import { NamedError } from "@opencode-ai/util/error"
 import { CopilotAuthPlugin } from "./copilot"
 import { KiroAuthPlugin } from "./kiro"
 import { gitlabAuthPlugin as GitlabAuthPlugin } from "opencode-gitlab-auth"
+import { PoeAuthPlugin } from "opencode-poe-auth"
 import { Effect, Layer, ServiceMap } from "effect"
 import { InstanceState } from "@/effect/instance-state"
 import { makeRunPromise } from "@/effect/run-service"
@@ -45,7 +46,13 @@ export namespace Plugin {
   export class Service extends ServiceMap.Service<Service, Interface>()("@opencode/Plugin") {}
 
   // Built-in plugins that are directly imported (not installed from npm)
-  const INTERNAL_PLUGINS: PluginInstance[] = [CodexAuthPlugin, CopilotAuthPlugin, KiroAuthPlugin, GitlabAuthPlugin]
+  const INTERNAL_PLUGINS: PluginInstance[] = [
+    CodexAuthPlugin,
+    CopilotAuthPlugin,
+    KiroAuthPlugin,
+    GitlabAuthPlugin,
+    PoeAuthPlugin,
+  ]
 
   // Old npm package names for plugins that are now built-in — skip if users still have them in config
   const DEPRECATED_PLUGIN_PACKAGES = ["opencode-openai-codex-auth", "opencode-copilot-auth"]
@@ -137,7 +144,11 @@ export namespace Plugin {
 
             // Notify plugins of current config
             for (const hook of hooks) {
-              await (hook as any).config?.(cfg)
+              try {
+                await (hook as any).config?.(cfg)
+              } catch (err) {
+                log.error("plugin config hook failed", { error: err })
+              }
             }
           })
 
