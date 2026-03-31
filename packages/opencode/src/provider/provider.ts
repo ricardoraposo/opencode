@@ -34,6 +34,7 @@ import { createOpenAI } from "@ai-sdk/openai"
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible"
 import { createOpenRouter } from "@openrouter/ai-sdk-provider"
 import { createOpenaiCompatible as createGitHubCopilotOpenAICompatible } from "./sdk/copilot"
+import { createKiro } from "./sdk/kiro/src"
 import { createXai } from "@ai-sdk/xai"
 import { createMistral } from "@ai-sdk/mistral"
 import { createGroq } from "@ai-sdk/groq"
@@ -53,6 +54,7 @@ import {
 import { fromNodeProviderChain } from "@aws-sdk/credential-providers"
 import { GoogleAuth } from "google-auth-library"
 import { ProviderTransform } from "./transform"
+import { getKiroDbPath } from "../plugin/kiro"
 import { Installation } from "../installation"
 import { ModelID, ProviderID } from "./schema"
 
@@ -139,6 +141,8 @@ export namespace Provider {
     "@ai-sdk/vercel": createVercel,
     "gitlab-ai-provider": createGitLab,
     "@ai-sdk/github-copilot": createGitHubCopilotOpenAICompatible,
+    // @ts-ignore
+    "@ai-sdk/kiro": createKiro,
   }
 
   type CustomModelLoader = (sdk: any, modelID: string, options?: Record<string, any>) => Promise<any>
@@ -761,13 +765,23 @@ export namespace Provider {
         },
       }
     },
-    kilo: async () => {
+    kiro: async (input) => {
+      // Check if Kiro CLI authentication exists
+      const dbPath = getKiroDbPath()
+      const hasAuth = await Bun.file(dbPath).exists()
+
+      if (!hasAuth) {
+        // No auth, hide all models
+        for (const key of Object.keys(input.models)) {
+          delete input.models[key]
+        }
+      }
+
       return {
-        autoload: false,
+        autoload: hasAuth,
         options: {
           headers: {
-            "HTTP-Referer": "https://opencode.ai/",
-            "X-Title": "opencode",
+            "x-kiro-client": "opencode",
           },
         },
       }
@@ -981,6 +995,20 @@ export namespace Provider {
             if (enabled && !enabled.has(providerID)) return false
             if (disabled.has(providerID)) return false
             return true
+          }
+
+          // Add GitHub Copilot Enterprise provider that inherits from GitHub Copilot
+          if (database["github-copilot"]) {
+            const copilot = database["github-copilot"]
+            database["github-copilot-enterprise"] = {
+              ...copilot,
+              id: ProviderID.githubCopilotEnterprise,
+              name: "GitHub Copilot Enterprise",
+              models: mapValues(copilot.models, (model) => ({
+                ...model,
+                providerID: ProviderID.githubCopilotEnterprise,
+              })),
+            }
           }
 
           const providers: Record<ProviderID, Info> = {} as Record<ProviderID, Info>
